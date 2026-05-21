@@ -1,9 +1,3 @@
-"""
-Created on Thu May 21 11:36:04 2026
-
-@author: mika
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 import mpmath

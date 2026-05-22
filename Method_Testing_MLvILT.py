@@ -7,21 +7,21 @@ import mittag_leffler
 mpmath.mp.dps = 15
 
 #params
-alpha = 0.8
-beta = 0.7
-a = 1
+a = 0.8
+b = 0.7
+c = 1
 
 t_vals = np.linspace(0.1, 30, 100)
 
 #Mittag-Leffler function as in 1.36j
 ML = np.zeros_like(t_vals)
 for i, t in enumerate(t_vals):
-    z = -a * t**alpha
-    ML[i] = (t**(beta - 1)) * mittag_leffler.mittag_leffler(z, alpha, beta)
+    z = -c * t**a
+    ML[i] = (t**(b - 1)) * mittag_leffler.mittag_leffler(z, a, b)
 
 #inverse of the Mittag-Leffler function we will test
 def ML_hat(s):
-    return s**(alpha - beta) / (s**alpha + a)
+    return s**(a - b) / (s**a + c)
 
 #talbot method for laplace inversion
 inversion = np.zeros_like(t_vals)

@@ -13,12 +13,13 @@ eta_nu = 1
 k_B = 1
 
 #variables
-alpha = 1.0
-nu = 1.0
+alpha = 0.8
+nu = 0.7
 T_x = 1
-T_y = 6
+T_y = 3
 
-t_vals = np.linspace(1e-5, 2.0, 500)
+#time array, we start from a small value because as t approaches 0, s approaches infinity.
+t_vals = np.linspace(1e-5, 0.5, 150)
 
 def G_hat(s):
     '''
@@ -72,20 +73,29 @@ H_dx = invert(H_dx_hat, t_vals)
 H_dy = invert(H_dy_hat, t_vals)
 H_c  = invert(H_c_hat, t_vals)
 
-#This simplifies the convolution just like 1.10
+#this simplifies the convolution just like 1.10
 H_x = H_dx + H_c
 H_y = H_dy + H_c
 
 #this uses the convolution module included within numpy, we have to chip off the last value to match the noise array length
 pos_x = dt * (np.convolve(H_x, xi_x, mode ="full")[:len(t_vals) - 1]
-          - np.convolve(H_c, xi_y, mode= "full")[:len(t_vals) - 1])
+          + np.convolve(H_c, xi_y, mode= "full")[:len(t_vals) - 1])
 
 pos_y = dt * (np.convolve(H_y, xi_y, mode='full')[:len(t_vals)-1]
-          - np.convolve(H_c, xi_x, mode='full')[:len(t_vals)-1])
+          + np.convolve(H_c, xi_x, mode='full')[:len(t_vals)-1])
 
-plt.plot(pos_x, pos_y, linewidth = "1.0")
+#a bit crude but it makes it more intuitive to see the trajectory evolve in time
+colors = ["red", "orange", "yellow", "green", "blue", "purple", "magenta"]
+ph = len(pos_x) // len(colors)
+for i in range(len(colors)):
+    plt.scatter(pos_x[i*ph], pos_y[i*ph], color=colors[i], s = 6)
+    plt.plot(pos_x[i*ph:(i+1)*ph+1], pos_y[i*ph:(i+1)*ph+1], color=colors[i], lw = "0.5")
+
+#plotting settings
 plt.xlabel(r"$x(t)$")
 plt.ylabel(r"$y(t)$")
+plt.axvline(0, color = "black", lw = "0.5", alpha = 0.7)
+plt.axhline(0, color = "black", lw = "0.5", alpha = 0.7)
 plt.show()
 
 

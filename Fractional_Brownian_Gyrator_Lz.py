@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import mpmath
 from scipy.integrate import cumulative_trapezoid
 
-#sets the precion of mpmath to 15 decimals
+#sets the precision of mpmath to 15 decimals
 mpmath.mp.dps = 15
 
 #params
@@ -14,7 +14,7 @@ k_B = 1
 
 #variables
 alpha = 1.0
-nu = 1.0
+nu = 0.8
 T_x = 1
 T_y = 2
 
@@ -51,7 +51,7 @@ def invert(func_hat, t_values):
     convert the value back to a python float first so the dtype of t_vals matches the
     d_type of the output functions
     '''
-    array = np.zeros_like(t_values)     #sets up an array to avoid copying
+    array = np.zeros_like(t_values)     
     for i, t in enumerate(t_values):
         if t<= 0:
             raise ValueError("Talbot requires t > 0")
@@ -113,6 +113,5 @@ plt.plot(t_vals, L_z, label = r"Total $\langle L_z\rangle$", linestyle = "--", c
 plt.xlabel(r"Time $\dfrac{t}{\tau_c}$")
 plt.ylabel(r"$\langle L_z\rangle$")
 plt.legend()
-plt.grid(True, linestyle = "--")
 plt.axhline(0, color = "black", linewidth = 0.5)
 plt.show()

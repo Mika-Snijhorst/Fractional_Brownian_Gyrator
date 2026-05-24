@@ -14,10 +14,10 @@ eta_nu = 1
 k_B = 1
 
 #variables to iterate over
-alpha_list = [0.55, 0.65, 0.8, 0.9, 1]
-nu_list = [0.55, 0.65, 0.8, 0.9, 1]
 T_x = 1
 T_y_list = [1, 10, 100]
+alpha_list = [1]
+nu_list = [0.55, 0.65, 0.8, 0.9] 
 
 #time
 T0 = 1e-5

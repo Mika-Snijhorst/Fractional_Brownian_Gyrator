@@ -19,7 +19,7 @@ T0 = 1e-5
 dt = 0.0005
 
 T_x = 1
-T_y_list = [1, 100]
+T_y_list = [1, 10, 100]
 alpha_list = [1]
 nu_list = [0.55, 0.65, 0.8, 0.9] 
 
@@ -134,3 +134,4 @@ for alpha in alpha_list:
                 print(f"computation complete, data saved to folder: {folder}")
                 print(f"parameters: alpha = {alpha}, nu = {nu}, Tx = {T_x}, Ty = {T_y}")
 
+print("--all computations complete--")

@@ -13,12 +13,12 @@ T0 = 1e-5
 dt = 0.0005
 
 #variables
-alpha = 0.9
-nu = 0.65
+alpha = 1
+nu = 1
 
 #temperatures
 T_x = 1
-T_y_list = [1, 100]
+T_y_list = [1, 10, 100]
 
 def load_trajectory_data(alpha, nu, T_x, T_y, k, Tf, dt):
     '''

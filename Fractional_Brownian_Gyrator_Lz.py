@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import mpmath
@@ -12,14 +13,21 @@ eta_alpha = 1
 eta_nu = 1
 k_B = 1
 
-#variables
-alpha = 1.0
-nu = 0.8
+#variables to iterate over
+alpha_list = [0.55, 0.65, 0.8, 0.9, 1]
+nu_list = [0.55, 0.65, 0.8, 0.9, 1]
 T_x = 1
-T_y = 2
+T_y_list = [1, 10, 100]
 
-#time array
-t_vals = np.linspace(1e-5, 10.0, 200)
+#time
+T0 = 1e-5
+Tf = 5
+
+#dt = 0.0005 is for file naming compatibility
+dt = 0.0005
+
+#for the actual computation of L_z we do not need as many time points
+t_vals = np.linspace(T0, Tf, 200)
 
 def G_hat(s):
     '''
@@ -59,9 +67,7 @@ def invert(func_hat, t_values):
             array[i] = float(mpmath.invertlaplace(func_hat, t, method = "talbot"))
     return array
 
-#%%
-
-def run(t):
+def run(t, T_x, T_y, alpha, nu, k):
     '''
     Takes time values as an input and then evaluates the functions in the Laplace domain 
     at those time values. The integration is done by the cumulative_trapezoid() function
@@ -100,18 +106,33 @@ def run(t):
     
     return L_z, term_1, term_2, term_3
 
-#calls the evaluation to run
-L_z, term_1, term_2, term_3 = run(t_vals)
+#checks if the folder exists, if not crates it
+os.makedirs("angular_momentum_data", exist_ok=True)
 
-#plotting
-plt.plot(t_vals, term_1, label = "Term 1")
-plt.plot(t_vals, term_2, label = "Term 2")
-plt.plot(t_vals, term_3, label = "Term 3")
-plt.plot(t_vals, L_z, label = r"Total $\langle L_z\rangle$", linestyle = "--", color = "red")
+#runs the computation through all parameter combinations
+for T_y in T_y_list:
+    for alpha in alpha_list:
+        for nu in nu_list:
+            #we only compute the cases where alpha >= nu
+            if alpha >= nu:
+                '''
+                the data will be stored in a folder named "angular_momentum_data", the data is named according to the following format:
+                Angular_momentum_for_alpha{alpha}nu{nu}-Tx={T_x}Ty={T_y}-k={k}_Tf={Tf}_dt={dt}.npz
+                '''
+                #defines the path where the data will be stored
+                folder = "angular_momentum_data"
+                save = os.path.join(folder, f"Angular_momentum_for_alpha{alpha}nu{nu}-Tx={T_x}Ty={T_y}-k={k}_Tf={Tf}_dt={dt}.npz")
+                
+                #checks if the file already exists, if it does it skips the computation, otherwise it runs the computation and saves the data
+                if os.path.exists(save):
+                    print(f"file already exists, skipping computation for alpha = {alpha}, nu = {nu}, T_y = {T_y}")
+                    continue
 
-#plot settings
-plt.xlabel(r"Time $\dfrac{t}{\tau_c}$")
-plt.ylabel(r"$\langle L_z\rangle$")
-plt.legend()
-plt.axhline(0, color = "black", linewidth = 0.5)
-plt.show()
+                #computes the data
+                L_z, term_1, term_2, term_3 = run(t_vals, T_x, T_y, alpha, nu, k)
+                
+                #saves the data
+                np.savez(save, L_z = L_z, term_1 = term_1, term_2 = term_2, term_3 = term_3)
+                print(f"filename saved: Angular_momentum_for_alpha{alpha}nu{nu}-Tx={T_x}Ty={T_y}-k={k}_Tf={Tf}_dt={dt}.npz to folder {folder}")
+
+print("--computation complete--")

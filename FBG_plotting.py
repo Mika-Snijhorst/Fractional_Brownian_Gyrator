@@ -50,8 +50,9 @@ def load_angular_momentum_data(alpha, nu, T_x, T_y, k, Tf, dt):
     return L_z
 
 #creates a subplot for eacht temperature, ax.flatten() allows to iterate without having to swap x and y
-fig, ax = plt.subplots(1, len(T_y_list), figsize= (8*len(T_y_list), 3), sharex =True,sharey=True)
+fig, ax = plt.subplots(1, len(T_y_list), figsize= (8*len(T_y_list), 4), sharex =True,sharey=True)
 ax_flat = ax.flatten()
+labels = ["a)", "b)", "c)", "d)", "e)"]
 
 for i, T_y in enumerate(T_y_list):
     #load data for trajectories
@@ -59,28 +60,49 @@ for i, T_y in enumerate(T_y_list):
 
     #generates the colors for the colorbar, they are generated with respect to time
     colors = np.linspace(0, Tf, len(pos_x))
+    cmap = "plasma_r"
 
     #plots the trajectory
-    sc = ax_flat[i].scatter(pos_x, pos_y, c=colors, cmap="plasma_r", s=10, alpha=0.7)
+    sc = ax_flat[i].scatter(pos_x, pos_y, c=colors, cmap=cmap, s=10, alpha=0.7)
     ax_flat[i].plot(pos_x, pos_y, color = "black", linewidth = 0.5, alpha = 0.5)
     ax_flat[i].set_xlabel(r"$x(t)$")
-    ax_flat[i].set_title(fr"$\alpha = {alpha}, \nu = {nu}$, T$_x$ = {T_x}, T$_y$ = {T_y}") 
     ax_flat[i].axvline(0, color = "black", linestyle = "--", linewidth = 0.5)
     ax_flat[i].axhline(0, color = "black", linestyle = "--", linewidth = 0.5)
     ax_flat[i].set_xlim(min(pos_x)-3, max(pos_x)+3)
     ax_flat[i].set_ylim(min(pos_y)-3, max(pos_y)+3)
+    print(max(pos_x)+3, min(pos_y)-3)
+
+    #text in plot
+    ax_flat[i].text(-9.8, -18, labels[i], fontsize = 10, color = "black")
+    ax_flat[i].text(9.2, -16.5, f"T$_y$ = {T_y}", fontsize = 10, color = "black", ha = "right", va = "bottom")
+    ax_flat[i].text(9.2, -18.5, fr"$\alpha$ = {alpha}, $\nu$ = {nu}", fontsize = 10, color = "black", ha = "right", va = "bottom")
+    ax_flat[i].text(9.2, -13.5, f"k = {k}", fontsize = 10, color = "black", ha = "right", va = "bottom")
+    ax_flat[i].tick_params(axis = "both", labelsize = 8, direction = "out")
     
     
     #plots the angular momentum in an inset
     L_z = load_angular_momentum_data(alpha, nu, T_x, T_y, k, Tf, dt)
-    inset_ax=inset_axes(ax_flat[i], width="30%", height="30%", loc="upper left", borderpad = 1)
-    inset_ax.plot(np.linspace(T0, Tf, len(L_z)), L_z, color = "blue", linewidth = 1)
-    inset_ax.axhline(0, color = "black", linestyle = "--", linewidth = 0.5)
+    inset_ax=inset_axes(ax_flat[i], width="30%", height="30%", loc="upper left", borderpad = 2)
+    inset_ax.scatter(np.linspace(T0, Tf, len(L_z)), L_z, c=np.linspace(0, Tf, len(L_z)), cmap=cmap, s=1, alpha=0.7)
+    inset_ax.plot(np.linspace(T0, Tf, len(L_z)), L_z, color = "black", linewidth = 1, alpha = 0.5)
+    inset_ax.axhline(0, color = "black", linestyle = ":", linewidth = 0.5)
     inset_ax.set_xticks([])
-    inset_ax.tick_params(axis = "y",labelsize=5, direction="in", pad=-15)
+    inset_ax.tick_params(axis = "y",labelsize=5.5, direction="in")
+    if L_z[(len(L_z)-5)] == 0:
+        inset_ax.text(5, -0.05, r"$\langle L_z(t)\rangle$", ha="right", va="bottom", fontsize = 10, color = "black")
+    else:    
+        inset_ax.text(5, 0, r"$\langle L_z(t)\rangle$", ha="right", va="bottom", fontsize = 10, color = "black")
 
+#sets the colorbar to the right of the last subplot, with a label and ticks
 cbar = fig.colorbar(sc, ax=ax.ravel().tolist(), orientation="vertical", fraction=0.02, pad=0.02)
 cbar.set_label("Time", rotation=270, labelpad=15)
+ax_flat[0].set_ylabel(r"$y(t)$")
+
+folder = "Thesis_plots"
+filename = f"plot_alpha{alpha}nu{nu}-Tx={T_x}-k={k}_Tf={Tf}_dt={dt}.png"
+plt.savefig(os.path.join(folder, filename))
+
+
 plt.show()
 
 

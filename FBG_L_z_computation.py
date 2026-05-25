@@ -8,7 +8,7 @@ from scipy.integrate import cumulative_trapezoid
 mpmath.mp.dps = 15
 
 #params
-k = 1
+k = 0
 eta_alpha = 1
 eta_nu = 1
 k_B = 1
@@ -17,7 +17,7 @@ k_B = 1
 T_x = 1
 T_y_list = [1, 10, 100]
 alpha_list = [1]
-nu_list = [0.55, 0.65, 0.8, 0.9] 
+nu_list = [0.55, 0.65, 0.8, 0.9, 1] 
 
 #time
 T0 = 1e-5
@@ -125,7 +125,7 @@ for T_y in T_y_list:
                 
                 #checks if the file already exists, if it does it skips the computation, otherwise it runs the computation and saves the data
                 if os.path.exists(save):
-                    print(f"file already exists, skipping computation for alpha = {alpha}, nu = {nu}, T_y = {T_y}")
+                    print(f"file already exists, skipping computation for alpha = {alpha}, nu = {nu}, T_y = {T_y}, k = {k}")
                     continue
 
                 #computes the data

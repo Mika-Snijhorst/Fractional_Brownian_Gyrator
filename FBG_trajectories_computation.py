@@ -10,7 +10,7 @@ import os
 mpmath.mp.dps = 15
 
 #params
-k = 1
+k = 0
 eta_alpha = 1
 eta_nu = 1
 k_B = 1
@@ -21,7 +21,7 @@ dt = 0.0005
 T_x = 1
 T_y_list = [1, 10, 100]
 alpha_list = [1]
-nu_list = [0.55, 0.65, 0.8, 0.9] 
+nu_list = [1] 
 
 #time array, we start from a small value because as t approaches 0, s approaches infinity.
 t_vals = np.arange(T0, Tf, dt)
@@ -120,7 +120,7 @@ for alpha in alpha_list:
                 folder = "trajectory_data"
                 save = os.path.join(folder, f"Data_for_trajectory_alpha{alpha}nu{nu}-Tx={T_x}Ty={T_y}-k={k}_Tf={Tf}_dt={dt}.npz")
 
-                #checks if the file already exists, if it does it skips the computation, otherwise it runs the computation and saves the data
+                #checks if the file already exists, if it does it skips the computation
                 if os.path.exists(save):
                     print(f"file already exists, skipping computation for alpha = {alpha}, nu = {nu}, T_y = {T_y}")
                     continue
@@ -132,6 +132,6 @@ for alpha in alpha_list:
                 #saves the data
                 np.savez(save, pos_x = pos_x, pos_y = pos_y)
                 print(f"computation complete, data saved to folder: {folder}")
-                print(f"parameters: alpha = {alpha}, nu = {nu}, Tx = {T_x}, Ty = {T_y}")
+                print(f"parameters: alpha = {alpha}, nu = {nu}, Tx = {T_x}, Ty = {T_y}, k = {k}")
 
 print("--all computations complete--")
